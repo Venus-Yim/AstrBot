@@ -386,6 +386,7 @@ class AiocqhttpAdapter(Platform):
 
                 message_str += "".join(at_parts)
             elif t == "markdown":
+                logger.info(f"检测到markdown消息，内容为{t}")
                 texts = []
                 for m in m_group:
                     try:
