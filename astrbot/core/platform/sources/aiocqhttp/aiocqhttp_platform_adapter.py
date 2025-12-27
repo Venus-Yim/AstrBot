@@ -386,9 +386,22 @@ class AiocqhttpAdapter(Platform):
 
                 message_str += "".join(at_parts)
             elif t == "markdown":
-                text = m["data"].get("markdown") or m["data"].get("content", "")
-                abm.message.append(Plain(text=text))
-                message_str += text
+                texts = []
+                for m in m_group:
+                    try:
+                        data = m.get("data", {})
+                        txt = data.get("markdown") or data.get("content") or ""
+                        if txt:
+                            texts.append(txt)
+                            abm.message.append(Plain(text=txt))
+                    except Exception as e:
+                        logger.exception(f"解析 markdown 段失败: {m}. {e}")
+                        # 继续处理下一段
+                        continue
+
+                segment_text = "".join(texts).strip()
+                if segment_text:
+                    message_str += segment_text
             else:
                 for m in m_group:
                     try:
