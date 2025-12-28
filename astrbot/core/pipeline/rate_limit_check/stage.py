@@ -63,6 +63,8 @@ class RateLimitStage(Stage):
                 timestamps = self.event_timestamps[session_id]
                 self._remove_expired_timestamps(timestamps, now)
 
+                logger.info(f"[限流] 会话 {session_id} 队列长度: {len(timestamps)}，最早时间戳: {timestamps[0] if timestamps else '空'}")
+                
                 if len(timestamps) < self.rate_limit_count:
                     timestamps.append(now)
                     break
